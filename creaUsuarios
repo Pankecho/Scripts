@@ -1,0 +1,42 @@
+#!/bin/bash
+
+set -x
+
+if [ $(id -u) -eq 0 ]; then
+	read -p "Que servicio deseas meter: " servicio
+	read -p "Que ID deseas que empiece: " id
+
+	echo 'Creado grupo de usuarios'
+	GRUPO=`echo "grupo${servicio}" | tr '[A-Z]' '[a-z]'`
+	
+	groupadd --gid $id $GRUPO 
+
+	if [ $? -eq 0 ]; then
+		echo 'Grupo creado correctamente, creando usuarios con home'
+		for i in 0 1 2 3 4
+		do
+			CARPETA=`echo "Hola"`
+			USUARIO="pankecho"
+			IDENTIFICADOR=$(($id + $i))
+			if [ $i -eq 0 ]; then
+				$CARPETA=`echo "/home/admin${servicio}"`
+				$USUARIO=`echo "admin${servicio}"` 			 
+			else
+				$CARPETA=`echo "/home/usuario${i}${servicio}"`
+				$USUARIO=`echo "usuario${i}${servicio}"` 
+			fi
+			useradd -d $CARPETA -u $IDENTIFICADOR -g users -G $GRUPO -s /bin/bash -p $USUARIO $USUARIO
+			mkdir -p $CARPETA
+			chown -R $USUARIO:users $CARPETA
+			chmod 700 $CARPETA
+		done
+		echo 'Terminado de crear usuarios y sus Home'
+		exit 0
+	else
+		echo 'Hubo un error al crear el grupo'
+		exit 2
+	fi
+else
+	echo 'Intenta de nuevo desde root'
+	exit 2
+fi
