@@ -1,7 +1,5 @@
 #!/bin/bash
 
-set -x
-
 if [ $(id -u) -eq 0 ]; then
 	read -p "Que servicio deseas meter: " servicio
 	read -p "Que ID deseas que empiece: " id
@@ -19,11 +17,11 @@ if [ $(id -u) -eq 0 ]; then
 			USUARIO="pankecho"
 			IDENTIFICADOR=$(($id + $i))
 			if [ $i -eq 0 ]; then
-				$CARPETA=`echo "/home/admin${servicio}"`
-				$USUARIO=`echo "admin${servicio}"` 			 
+				CARPETA=`echo "/home/admin${servicio}"`
+				USUARIO=`echo "admin${servicio}"` 			 
 			else
-				$CARPETA=`echo "/home/usuario${i}${servicio}"`
-				$USUARIO=`echo "usuario${i}${servicio}"` 
+				CARPETA=`echo "/home/usuario${i}${servicio}"`
+				USUARIO=`echo "usuario${i}${servicio}"` 
 			fi
 			useradd -d $CARPETA -u $IDENTIFICADOR -g users -G $GRUPO -s /bin/bash -p $USUARIO $USUARIO
 			mkdir -p $CARPETA
